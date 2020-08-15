@@ -6,7 +6,7 @@ Dockerfile of Jupyter Notebook for Department of Information Science, Tohoku Gak
 作成されたDockerイメージをロードするとJupyterNotebookが起動し、Webブラウザからpythonやprocessingなどのプログラミング環境を利用できます。
 
 ## 使い方
-DockerHubにDockerイメージを登録してありますので、このDockerイメージをダウンロードして実行します。
+DockerHubにDockerイメージを登録してありますので、これをダウンロードして実行します。
 
 ```
 % docker pull takedarts/tgucs-notebook:latest
@@ -20,3 +20,5 @@ docker.io/takedarts/tgucs-notebook:latest
 http://cdee29d2143d:8888/?token=[token]
  or http://127.0.0.1:8888/?token=[token]
 ```
+
+実行時に表示されたURL`http://127.0.0.1:8888/?token=[token]`をWebブラウザで開くとJupyterNotebookを利用できます。
