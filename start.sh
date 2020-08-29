@@ -41,7 +41,7 @@ run-hooks /usr/local/bin/start-notebook.d
 # Handle special flags if we're root
 if [ $(id -u) == 0 ] ; then
     # Get username, uid, gid from home directory stats
-    NB_USER=`df | grep /home/jovyan | sed -e 's/^[^ ]*home\/\([^ ]*\).*/\1/g'`
+    NB_USER=`df | grep /home/jovyan | sed -e 's/^[^ ]*\/\([es][0-9]*\).*/\1/g'`
     NB_UID=`stat -c "%u" /home/jovyan`
     NB_GID=`stat -c "%g" /home/jovyan`
 
