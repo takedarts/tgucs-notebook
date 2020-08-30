@@ -139,6 +139,12 @@ RUN apt-get update && \
 #    fix-permissions $CONDA_DIR && \
 #    fix-permissions /home/$NB_USER
 
+# install network tools
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends iputils-ping net-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # patches
 RUN cp /usr/local/bin/start.sh /usr/local/bin/start.sh- && \
     cp /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py \
