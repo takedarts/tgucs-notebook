@@ -140,22 +140,27 @@ RUN apt-get update && \
 #    fix-permissions /home/$NB_USER
 
 # patches
-RUN mv /usr/local/bin/start.sh /usr/local/bin/start.sh- && \
-    mv /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json \
-    /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json- && \
-    mv /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py \
+RUN cp /usr/local/bin/start.sh /usr/local/bin/start.sh- && \
+    cp /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py \
     /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py-
+
 COPY start.sh /usr/local/bin/start.sh
-COPY plugin.json /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json
-COPY kernel.py /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py
+COPY calysto_processing.patch /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.patch
+RUN patch -u /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py \
+    < /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.patch
 
 RUN curl -O https://requirejs.org/docs/release/2.3.6/minified/require.js && \
     mv require.js /opt/conda/share/jupyter/lab/static/require.js
 
 RUN mv /opt/conda/share/jupyter/lab/static/index.html /opt/conda/share/jupyter/lab/static/index.html- && \
     sed -e 's/<\/body>/<script type="text\/javascript" src="{{page_config.fullStaticUrl}}\/require.js"><\/script><\/body>/' \
-    /opt/conda/share/jupyter/lab/static/index.html- > /opt/conda/share/jupyter/lab/static/index.html && \
-    rm /opt/conda/share/jupyter/lab/static/index.html-
+    /opt/conda/share/jupyter/lab/static/index.html- > /opt/conda/share/jupyter/lab/static/index.html
+
+RUN mv /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json \
+    /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json- && \
+    sed -e 's/"default": "monospace"/"default": "Monaco, monospace"/' \
+    /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json- \
+    > /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json
 
 RUN COMMON_LISP_JUPYTER=`ls /usr/local/share/quicklisp/dists/quicklisp/software/ | grep 'common-lisp-jupyter'` && \
     mv /usr/local/share/quicklisp/dists/quicklisp/software/$COMMON_LISP_JUPYTER/src/kernel.lisp \

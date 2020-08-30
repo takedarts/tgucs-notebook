@@ -1,0 +1,86 @@
+--- kernel.py.old	2020-08-15 06:55:14.000000000 +0900
++++ kernel.py.new	2020-08-15 21:26:42.000000000 +0900
+@@ -246,6 +246,7 @@
+   </button>
+ </div>
+ <b>Sketch #%(id)s state:</b> <span id="state_%(id)s">Loading...</span><br/>
++<div id="outputs_div_%(id)s"><pre></pre></div>
+ <script>
+ 
+ function change_button(button, disable) {
+@@ -427,6 +428,9 @@
+         component = document.getElementById("controls_div_%(id)s");
+         if (component != undefined)
+             component.remove();
++        component = document.getElementById("outputs_div_%(id)s");
++        if (component != undefined)
++            component.remove();
+         require([window.location.protocol + "//calysto.github.io/javascripts/processing/processing.js"], function() {
+             // FIXME: Stop all previously running versions (?)
+             var processingInstance = Processing.getInstanceById("canvas_%(id)s");
+@@ -435,28 +439,46 @@
+         });
+ 
+ 
+-        var output_area = this;
+-        // find my cell element
+-        var cell_element = output_area.element.parents('.cell');
+-        // which cell is it?
+-        var cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element);
+-        // get the cell object
+-        var cell = Jupyter.notebook.get_cell(cell_idx);
+-
+-        function jyp_print(cell, newline) {
+-            return function(message) {
+-                cell.get_callbacks().iopub.output({header: {"msg_type": "stream"},
+-                                                   content: {text: message + newline,
+-                                                             name: "stdout"}});
++        if( this !== void 0 ){ // for classic notebook
++            var output_area = this;
++            // find my cell element
++            var cell_element = output_area.element.parents('.cell');
++            // which cell is it?
++            var cell_idx = Jupyter.notebook.get_cell_elements().index(cell_element);
++            // get the cell object
++            var cell = Jupyter.notebook.get_cell(cell_idx);
++
++            function jyp_print(cell, newline) {
++                return function(message) {
++                    cell.get_callbacks().iopub.output({header: {"msg_type": "stream"},
++                                                       content: {text: message + newline,
++                                                                 name: "stdout"}});
++                }
+             }
++
++            window.jyp_println = jyp_print(cell, "\\n");
++            window.jyp_print = jyp_print(cell, "");
++
++            require([window.location.protocol + "//calysto.github.io/javascripts/processing/processing.js"], function() {
++               Processing.logger.println = jyp_print(cell, "\\n");
++               Processing.logger.print = jyp_print(cell, "");
++            });
+         }
+-        window.jyp_println = jyp_print(cell, "\\n");
+-        window.jyp_print = jyp_print(cell, "");
++        else { // for jupyterlab
++            function jyp_print(cell, newline) {
++                return function(message) {
++                    document.getElementById("outputs_div_%(id)s").firstElementChild.innerHTML += message + newline;;
++                }
++            }
+ 
+-        require([window.location.protocol + "//calysto.github.io/javascripts/processing/processing.js"], function() {
+-           Processing.logger.println = jyp_print(cell, "\\n");
+-           Processing.logger.print = jyp_print(cell, "");
+-        });
++            window.jyp_println = jyp_print(cell, "\\n");
++            window.jyp_print = jyp_print(cell, "");
++
++            require([window.location.protocol + "//calysto.github.io/javascripts/processing/processing.js"], function() {
++               Processing.logger.println = jyp_print(cell, "\\n");
++               Processing.logger.print = jyp_print(cell, "");
++            });
++        }
+ 
+ 
+         """ % env)
