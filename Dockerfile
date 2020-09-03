@@ -180,4 +180,7 @@ RUN cd && rm -rf * `find ./ -maxdepth 1 | grep '\./\..'`
 # change default page to "Lab-style" page
 CMD ["start-notebook.sh", "--NotebookApp.default_url=\"/lab\""]
 
+# change default timezone to JST
+ENV TZ Asia/Tokyo
+
 USER $NB_UID
