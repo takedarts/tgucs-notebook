@@ -178,3 +178,4 @@ RUN COMMON_LISP_JUPYTER=`ls /usr/local/share/quicklisp/dists/quicklisp/software/
 RUN cd && rm -rf * `find ./ -maxdepth 1 | grep '\./\..'`
 
 USER $NB_UID
+CMD ["start-notebook.sh", "--NotebookApp.default_url=\"/lab\""]
