@@ -145,9 +145,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# backup
-RUN cp /usr/local/bin/start.sh /usr/local/bin/start.sh- 
-
 # scripts
 COPY scripts/start.sh /usr/local/bin/start.sh
 
@@ -156,6 +153,7 @@ RUN cd /opt/conda/share/jupyter/lab/static/ && \
     curl -O https://requirejs.org/docs/release/2.3.6/minified/require.js
 
 COPY patches/docmanager.patch \
+    patches/extensionmanager.patch \
     patches/inspector.patch \
     patches/processing.patch \
     patches/quicklisp.patch \
@@ -167,6 +165,8 @@ RUN cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/docmanager-extension/ &
     patch -p1 < /home/$NB_USER/docmanager.patch && \
     cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/inspector-extension/ && \
     patch -p1 < /home/$NB_USER/inspector.patch && \
+    cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/extensionmanager-extension/ && \
+    patch -p1 < /home/$NB_USER/extensionmanager.patch && \
     cd /opt/conda/lib/python3.8/site-packages/calysto_processing/ && \
     patch -p1 < /home/$NB_USER/processing.patch && \
     cd /opt/conda/share/jupyter/lab/static/ && \
