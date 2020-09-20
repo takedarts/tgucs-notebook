@@ -155,13 +155,16 @@ COPY scripts/start.sh /usr/local/bin/start.sh
 RUN cd /opt/conda/share/jupyter/lab/static/ && \
     curl -O https://requirejs.org/docs/release/2.3.6/minified/require.js
 
-COPY patches/processing.patch \
+COPY patches/docmanager.patch \
+    patches/processing.patch \
     patches/quicklisp.patch \
     patches/static.patch \
     patches/terminal.patch \
     /home/$NB_USER/
 
-RUN cd /opt/conda/lib/python3.8/site-packages/calysto_processing/ && \
+RUN cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/docmanager-extension/ && \
+    patch -p1 < /home/$NB_USER/docmanager.patch && \
+    cd /opt/conda/lib/python3.8/site-packages/calysto_processing/ && \
     patch -p1 < /home/$NB_USER/processing.patch && \
     cd /opt/conda/share/jupyter/lab/static/ && \
     patch -p1 < /home/$NB_USER/static.patch && \

@@ -1,0 +1,28 @@
+diff -uprN old/plugin.json new/plugin.json
+--- old/plugin.json	2020-08-10 02:01:34.000000000 +0900
++++ new/plugin.json	2020-09-21 02:31:08.000000000 +0900
+@@ -8,12 +8,22 @@
+     {
+       "command": "docmanager:save",
+       "keys": ["Accel S"],
+-      "selector": "body"
++      "selector": ".jp-Notebook"
++    },
++    {
++      "command": "docmanager:save",
++      "keys": ["Accel S"],
++      "selector": ".jp-FileEditor"
++    },
++    {
++      "command": "docmanager:save-as",
++      "keys": ["Accel Shift S"],
++      "selector": ".jp-Notebook"
+     },
+     {
+       "command": "docmanager:save-as",
+       "keys": ["Accel Shift S"],
+-      "selector": "body"
++      "selector": ".jp-FileEditor"
+     }
+   ],
+   "properties": {
