@@ -1,0 +1,12 @@
+diff -uprN old/inspector.json new/inspector.json
+--- old/inspector.json	2020-09-21 02:22:36.000000000 +0900
++++ new/inspector.json	2020-09-21 03:06:10.000000000 +0900
+@@ -5,7 +5,7 @@
+     {
+       "command": "inspector:open",
+       "keys": ["Accel I"],
+-      "selector": "body"
++      "selector": ".jp-Notebook"
+     }
+   ],
+   "properties": {},
