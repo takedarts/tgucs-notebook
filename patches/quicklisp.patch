@@ -1,0 +1,21 @@
+diff -uprN old/kernel.lisp new/kernel.lisp
+--- old/kernel.lisp	2020-08-15 17:26:50.000000000 +0900
++++ new/kernel.lisp	2020-09-21 02:02:30.000000000 +0900
+@@ -207,7 +207,7 @@
+               k
+     (setq sink (make-instance 'sink
+                               :path (uiop:xdg-runtime-dir
+-                              (make-pathname :directory '(:relative "common-lisp-jupyter")
++                              (make-pathname :directory '(:relative ".common-lisp-jupyter")
+                                              :name (pathname-name connection-file)
+                                              :type "log"))))
+     (start sink)
+@@ -277,7 +277,7 @@
+           history (make-instance 'history
+                                  :sink sink
+                                  :path (uiop:xdg-data-home
+-                                         (make-pathname :directory '(:relative "common-lisp-jupyter")
++                                         (make-pathname :directory '(:relative ".common-lisp-jupyter")
+                                                         :name language-name
+                                                         :type "history"))))
+     (start mac)

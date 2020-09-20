@@ -1,6 +1,7 @@
---- kernel.py.old	2020-08-15 06:55:14.000000000 +0900
-+++ kernel.py.new	2020-08-15 21:26:42.000000000 +0900
-@@ -246,6 +246,7 @@
+diff -uprN old/kernel.py new/kernel.py
+--- old/kernel.py	2020-08-30 17:09:24.000000000 +0900
++++ new/kernel.py	2020-09-21 01:10:37.000000000 +0900
+@@ -246,6 +246,7 @@ IPython.notebook.select_next()
    </button>
  </div>
  <b>Sketch #%(id)s state:</b> <span id="state_%(id)s">Loading...</span><br/>
@@ -8,7 +9,7 @@
  <script>
  
  function change_button(button, disable) {
-@@ -427,6 +428,9 @@
+@@ -427,6 +428,9 @@ require([window.location.protocol + "//c
          component = document.getElementById("controls_div_%(id)s");
          if (component != undefined)
              component.remove();
@@ -18,7 +19,7 @@
          require([window.location.protocol + "//calysto.github.io/javascripts/processing/processing.js"], function() {
              // FIXME: Stop all previously running versions (?)
              var processingInstance = Processing.getInstanceById("canvas_%(id)s");
-@@ -435,28 +439,46 @@
+@@ -435,28 +439,46 @@ require([window.location.protocol + "//c
          });
  
  

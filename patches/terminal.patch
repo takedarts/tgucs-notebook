@@ -1,0 +1,12 @@
+diff -uprN old/plugin.json new/plugin.json
+--- old/plugin.json	2020-08-10 02:01:34.000000000 +0900
++++ new/plugin.json	2020-09-21 02:02:29.000000000 +0900
+@@ -31,7 +31,7 @@
+       "title": "Font family",
+       "description": "The font family used to render text.",
+       "$ref": "#/definitions/fontFamily",
+-      "default": "monospace"
++      "default": "Monaco, monospace"
+     },
+     "fontSize": {
+       "title": "Font size",

@@ -6,7 +6,7 @@ FROM $BASE_CONTAINER
 LABEL maintainer="Atsushi TAKEDA <takeda@cs.tohoku-gakuin.ac.jp>"
 
 USER root
-     
+
 # re-install for manuals
 RUN rm /etc/dpkg/dpkg.cfg.d/excludes &&\
     apt-get update && \
@@ -146,38 +146,33 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # backup
-RUN cp /usr/local/bin/start.sh /usr/local/bin/start.sh- && \
-    cp /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py \
-    /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py-
+RUN cp /usr/local/bin/start.sh /usr/local/bin/start.sh- 
 
 # scripts
 COPY scripts/start.sh /usr/local/bin/start.sh
 
 # patches
-COPY patches/calysto_processing.patch /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.patch
-RUN patch -u /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py \
-    < /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.patch
+RUN cd /opt/conda/share/jupyter/lab/static/ && \
+    curl -O https://requirejs.org/docs/release/2.3.6/minified/require.js
 
-RUN curl -O https://requirejs.org/docs/release/2.3.6/minified/require.js && \
-    mv require.js /opt/conda/share/jupyter/lab/static/require.js
+COPY patches/processing.patch \
+    patches/quicklisp.patch \
+    patches/static.patch \
+    patches/terminal.patch \
+    /home/$NB_USER/
 
-RUN mv /opt/conda/share/jupyter/lab/static/index.html /opt/conda/share/jupyter/lab/static/index.html- && \
-    sed -e 's/<\/body>/<script type="text\/javascript" src="{{page_config.fullStaticUrl}}\/require.js"><\/script><\/body>/' \
-    /opt/conda/share/jupyter/lab/static/index.html- > /opt/conda/share/jupyter/lab/static/index.html
+RUN cd /opt/conda/lib/python3.8/site-packages/calysto_processing/ && \
+    patch -p1 < /home/$NB_USER/processing.patch && \
+    cd /opt/conda/share/jupyter/lab/static/ && \
+    patch -p1 < /home/$NB_USER/static.patch && \
+    cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/ && \
+    patch -p1 < /home/$NB_USER/terminal.patch && \
+    COMMON_LISP_JUPYTER=`ls /usr/local/share/quicklisp/dists/quicklisp/software/ | grep 'common-lisp-jupyter'` && \
+    cd /usr/local/share/quicklisp/dists/quicklisp/software/$COMMON_LISP_JUPYTER/src/ && \
+    patch -p1 < /home/$NB_USER/quicklisp.patch && \
+    rm -f /home/$NB_USER/*.patch
 
-RUN mv /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json \
-    /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json- && \
-    sed -e 's/"default": "monospace"/"default": "Monaco, monospace"/' \
-    /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json- \
-    > /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/plugin.json
-
-RUN COMMON_LISP_JUPYTER=`ls /usr/local/share/quicklisp/dists/quicklisp/software/ | grep 'common-lisp-jupyter'` && \
-    mv /usr/local/share/quicklisp/dists/quicklisp/software/$COMMON_LISP_JUPYTER/src/kernel.lisp \
-    /usr/local/share/quicklisp/dists/quicklisp/software/$COMMON_LISP_JUPYTER/src/kernel.lisp- && \
-    sed -e 's/\"common-lisp-jupyter\"/\"\.common-lisp-jupyter\"/' \
-    /usr/local/share/quicklisp/dists/quicklisp/software/$COMMON_LISP_JUPYTER/src/kernel.lisp- \
-    > /usr/local/share/quicklisp/dists/quicklisp/software/$COMMON_LISP_JUPYTER/src/kernel.lisp
-
+# clean-up
 RUN cd && rm -rf * `find ./ -maxdepth 1 | grep '\./\..'`
 
 # change default page to "Lab-style" page

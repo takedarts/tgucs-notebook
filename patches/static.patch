@@ -1,0 +1,10 @@
+diff -uprN old/index.html new/index.html
+--- old/index.html	2020-08-10 02:02:27.000000000 +0900
++++ new/index.html	2020-09-21 02:08:56.000000000 +0900
+@@ -50,5 +50,5 @@
+   })();
+ </script>
+ 
+-<script type="text/javascript" src="{{page_config.fullStaticUrl}}/main.6af792cafdfe5d62c922.js"></script><script type="text/javascript" src="{{page_config.fullStaticUrl}}/vendors~main.73d234ee7136c28b959c.js"></script></body>
++<script type="text/javascript" src="{{page_config.fullStaticUrl}}/main.6af792cafdfe5d62c922.js"></script><script type="text/javascript" src="{{page_config.fullStaticUrl}}/vendors~main.73d234ee7136c28b959c.js"></script><script type="text/javascript" src="{{page_config.fullStaticUrl}}/require.js"></script></body>
+ </html>
