@@ -145,13 +145,16 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# patches
+# backup
 RUN cp /usr/local/bin/start.sh /usr/local/bin/start.sh- && \
     cp /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py \
     /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py-
 
-COPY start.sh /usr/local/bin/start.sh
-COPY calysto_processing.patch /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.patch
+# scripts
+COPY scripts/start.sh /usr/local/bin/start.sh
+
+# patches
+COPY patches/calysto_processing.patch /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.patch
 RUN patch -u /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.py \
     < /opt/conda/lib/python3.8/site-packages/calysto_processing/kernel.patch
 
