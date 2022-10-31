@@ -1,0 +1,12 @@
+diff -ur old/plugin.json new/plugin.json
+--- old/plugin.json	2022-10-31 23:35:46.000000000 +0900
++++ new/plugin.json	2022-10-31 23:36:05.000000000 +0900
+@@ -34,7 +34,7 @@
+       "type": "string",
+       "title": "Language locale",
+       "description": "Set the interface display language. Examples: 'es_CO', 'fr'.",
+-      "default": "en"
++      "default": "ja_JP"
+     },
+     "stringsPrefix": {
+       "type": "string",

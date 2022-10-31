@@ -1,0 +1,12 @@
+diff -ur old/settings.json new/settings.json
+--- old/settings.json	2022-10-31 23:46:39.000000000 +0900
++++ new/settings.json	2022-10-31 23:46:59.000000000 +0900
+@@ -302,7 +302,7 @@
+             "$ref": "#/definitions/preferences",
+             "default" : {
+                 "default_formatter": {
+-                    "python": ["isort", "black"],
++                    "python": ["isort", "autopep8"],
+                     "R": "formatR",
+                     "rust": "rustfmt",
+ 		    "c++11": "astyle"

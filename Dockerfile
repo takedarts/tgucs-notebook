@@ -1,6 +1,6 @@
 # Copyright (c) Atsushi TAKEDA
 # Distributed under the terms of the Modified BSD License.
-ARG BASE_CONTAINER=jupyter/scipy-notebook:9b87b1625445
+ARG BASE_CONTAINER=jupyter/scipy-notebook:ubuntu-22.04
 FROM $BASE_CONTAINER
 
 LABEL maintainer="Atsushi TAKEDA <takeda@cs.tohoku-gakuin.ac.jp>"
@@ -18,9 +18,20 @@ RUN rm /etc/dpkg/dpkg.cfg.d/excludes &&\
 
 # required softwares
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends man less curl vim openssh-client rsync && \
+    apt-get install -y --no-install-recommends man less curl vim emacs openssh-client rsync && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# python
+RUN conda install --quiet --yes \
+    autopep8 \
+    isort \
+    xeus-python \
+    jupyterlab_code_formatter && \
+    pip install ipyturtlenext && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
 
 # processing
 RUN wget -q https://download.processing.org/processing-3.5.4-linux64.tgz && \
@@ -48,39 +59,6 @@ RUN conda install --quiet --yes \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-# php
-RUN wget https://litipk.github.io/Jupyter-PHP-Installer/dist/jupyter-php-installer.phar && \
-    apt-get update -y && \
-    apt-get install -y --no-install-recommends \
-    php \
-    php-bz2 \
-    php-cli \
-    php-common \
-    php-curl \
-    php-gd \
-    php-gmp \
-    php-json \
-    php-mbstring \
-    php-readline \
-    php-sqlite3 \
-    php-xml \
-    php-xmlrpc \
-    php-zip \
-    php-zmq \
-    && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer && \
-    composer require psy/psysh && \
-    php jupyter-php-installer.phar install -vv && \
-    mv /usr/local/share/jupyter/kernels/jupyter-php /opt/conda/share/jupyter/kernels/ && \
-    rm -rf /home/$NB_USER/vendor && \		    
-    rm -f /home/$NB_USER/composer.json /home/$NB_USER/composer.lock && \
-    rm -f /home/$NB_USER/jupyter-php-installer.phar && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
 # maxima
 RUN apt-get update && \
     apt-get install -y --no-install-recommends texinfo sbcl libczmq-dev gnuplot && \
@@ -94,14 +72,14 @@ RUN apt-get update && \
     rm quicklisp.lisp && \
     echo "(asdf:initialize-output-translations" >> /home/$NB_USER/.sbclrc && \
     echo " '(:output-translations :disable-cache :ignore-inherited-configuration))" >> /home/$NB_USER/.sbclrc && \
-    curl -OL https://sourceforge.net/projects/maxima/files/Maxima-source/5.44.0-source/maxima-5.44.0.tar.gz && \
-    tar xf maxima-5.44.0.tar.gz && \
-    cd maxima-5.44.0 && \
+    curl -OL https://sourceforge.net/projects/maxima/files/Maxima-source/5.45.1-source/maxima-5.45.1.tar.gz && \
+    tar xf maxima-5.45.1.tar.gz && \
+    cd maxima-5.45.1 && \
     ./configure --enable-sbcl --prefix=/usr/local && \
     make && \
     make install && \
     cd .. && \
-    rm -rf maxima-5.44.0 maxima-5.44.0.tar.gz && \
+    rm -rf maxima-5.45.1 maxima-5.45.1.tar.gz && \
     git clone https://github.com/robert-dodier/maxima-jupyter && \
     cd maxima-jupyter && \
     maxima --batch-string="load(\"load-maxima-jupyter.lisp\");jupyter_install();" && \
@@ -118,20 +96,38 @@ RUN apt-get update && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-# python debugger
-# RUN conda install --quiet --yes \
-#    xeus-python \
-#    jupyterlab-git && \
-#    conda clean --all -f -y && \
-#    jupyter labextension install @jupyterlab/debugger@^0.2.0 --no-build && \
-#    jupyter labextension install @jupyterlab/toc@^3.0.0 --no-build && \
-#    jupyter lab build -y && \
-#    jupyter lab clean -y && \
-#    npm cache clean --force && \
-#    rm -rf /home/$NB_USER/.cache/yarn && \
-#    rm -rf /home/$NB_USER/.node-gyp && \
-#    fix-permissions $CONDA_DIR && \
-#    fix-permissions /home/$NB_USER
+# php
+# RUN wget https://litipk.github.io/Jupyter-PHP-Installer/dist/jupyter-php-installer.phar && \
+#     apt-get update -y && \
+#     apt-get install -y --no-install-recommends \
+#     php \
+#     php-bz2 \
+#     php-cli \
+#     php-common \
+#     php-curl \
+#     php-gd \
+#     php-gmp \
+#     php-json \
+#     php-mbstring \
+#     php-readline \
+#     php-sqlite3 \
+#     php-xml \
+#     php-xmlrpc \
+#     php-zip \
+#     php-zmq \
+#     && \
+#     apt-get clean && \
+#     rm -rf /var/lib/apt/lists/* && \
+#     curl -sS https://getcomposer.org/installer | php && \
+#     mv composer.phar /usr/local/bin/composer && \
+#     composer require psy/psysh && \
+#     php jupyter-php-installer.phar install -vv && \
+#     mv /usr/local/share/jupyter/kernels/jupyter-php /opt/conda/share/jupyter/kernels/ && \
+#     rm -rf /home/$NB_USER/vendor && \		    
+#     rm -f /home/$NB_USER/composer.json /home/$NB_USER/composer.lock && \
+#     rm -f /home/$NB_USER/jupyter-php-installer.phar && \
+#     fix-permissions $CONDA_DIR && \
+#     fix-permissions /home/$NB_USER
 
 # cling
 # RUN conda install --quiet --yes 'xeus-cling' && \
@@ -145,34 +141,49 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# extensions
+RUN conda install --quiet --yes \
+    jupyterlab-language-pack-ja-JP \
+    jupyterlab-git && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+
 # scripts
 COPY scripts/start.sh /usr/local/bin/start.sh
+RUN chmod 755 /usr/local/bin/start.sh
 
 # patches
 RUN cd /opt/conda/share/jupyter/lab/static/ && \
     curl -O https://requirejs.org/docs/release/2.3.6/minified/require.js
 
-COPY patches/docmanager.patch \
+COPY patches/static.patch \
+    patches/docmanager.patch \
     patches/extensionmanager.patch \
     patches/inspector.patch \
-    patches/processing.patch \
     patches/quicklisp.patch \
-    patches/static.patch \
     patches/terminal.patch \
+    patches/translation.patch \
+    patches/formatter.patch \
+    patches/processing.patch \
     /home/$NB_USER/
 
-RUN cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/docmanager-extension/ && \
+RUN cd /opt/conda/share/jupyter/lab/static/ && \
+    patch -p1 < /home/$NB_USER/static.patch && \
+    cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/docmanager-extension/ && \
     patch -p1 < /home/$NB_USER/docmanager.patch && \
-    cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/inspector-extension/ && \
-    patch -p1 < /home/$NB_USER/inspector.patch && \
     cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/extensionmanager-extension/ && \
     patch -p1 < /home/$NB_USER/extensionmanager.patch && \
-    cd /opt/conda/lib/python3.8/site-packages/calysto_processing/ && \
-    patch -p1 < /home/$NB_USER/processing.patch && \
-    cd /opt/conda/share/jupyter/lab/static/ && \
-    patch -p1 < /home/$NB_USER/static.patch && \
+    cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/inspector-extension/ && \
+    patch -p1 < /home/$NB_USER/inspector.patch && \
     cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/ && \
     patch -p1 < /home/$NB_USER/terminal.patch && \
+    cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/translation-extension/ && \
+    patch -p1 < /home/$NB_USER/translation.patch && \
+    cd /opt/conda/share/jupyter/labextensions/@ryantam626/jupyterlab_code_formatter/schemas/@ryantam626/jupyterlab_code_formatter && \
+    patch -p1 < /home/$NB_USER/formatter.patch && \
+    cd /opt/conda/lib/python3.10/site-packages/calysto_processing/ && \
+    patch -p1 < /home/$NB_USER/processing.patch && \
     COMMON_LISP_JUPYTER=`ls /usr/local/share/quicklisp/dists/quicklisp/software/ | grep 'common-lisp-jupyter'` && \
     cd /usr/local/share/quicklisp/dists/quicklisp/software/$COMMON_LISP_JUPYTER/src/ && \
     patch -p1 < /home/$NB_USER/quicklisp.patch && \
