@@ -24,8 +24,7 @@ http://cdee29d2143d:8888/?token=[token]
 実行時に表示されたURL(`http://127.0.0.1:8888/?token=[token]`)をWebブラウザで開くとJupyterNotebookを利用できます。
 
 ## 利用可能なkernel
-- python3
+- python3 (xpython3)
 - bash
 - [processing](https://github.com/Calysto/calysto_processing)
-- [PHP](https://github.com/Litipk/Jupyter-PHP)
 - [maxima](https://github.com/robert-dodier/maxima-jupyter)
