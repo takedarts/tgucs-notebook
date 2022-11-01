@@ -28,8 +28,10 @@ RUN conda install --quiet --yes \
     isort \
     xeus-python \
     jupyterlab_code_formatter && \
-    pip install ipyturtlenext && \
     conda clean --all -f -y && \
+    pip install \
+    ipyturtlenext \
+    lckr-jupyterlab-variableinspector && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
