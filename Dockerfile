@@ -39,7 +39,7 @@ RUN conda install --quiet --yes \
     jupyterlab_code_formatter && \
     conda clean --all -f -y && \
     pip install \
-    ipyturtlenext \
+    ipyturtle3 \
     lckr-jupyterlab-variableinspector && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
