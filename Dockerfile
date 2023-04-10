@@ -1,6 +1,6 @@
 # Copyright (c) Atsushi TAKEDA
 # Distributed under the terms of the Modified BSD License.
-ARG BASE_CONTAINER=jupyter/scipy-notebook:ubuntu-22.04
+ARG BASE_CONTAINER=jupyter/datascience-notebook:lab-3.5.3
 FROM $BASE_CONTAINER
 
 LABEL maintainer="Atsushi TAKEDA <takeda@cs.tohoku-gakuin.ac.jp>"
@@ -22,11 +22,20 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# network tools
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends iputils-ping net-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # python
 RUN conda install --quiet --yes \
     autopep8 \
     isort \
     xeus-python \
+    jupyter-dash \
+    plotly \
+    polars \
     jupyterlab_code_formatter && \
     conda clean --all -f -y && \
     pip install \
@@ -62,6 +71,8 @@ RUN conda install --quiet --yes \
     fix-permissions /home/$NB_USER
 
 # maxima
+# use maxima-jupyter@538ac8309f064a85fc9a5b7edd709e00553f94ef
+# the newer versions do not display figures.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends texinfo sbcl libczmq-dev gnuplot && \
     apt-get clean && \
@@ -84,6 +95,7 @@ RUN apt-get update && \
     rm -rf maxima-5.45.1 maxima-5.45.1.tar.gz && \
     git clone https://github.com/robert-dodier/maxima-jupyter && \
     cd maxima-jupyter && \
+    git checkout 538ac8309f064a85fc9a5b7edd709e00553f94ef && \
     maxima --batch-string="load(\"load-maxima-jupyter.lisp\");jupyter_install();" && \
     cd .. && \
     rm -rf maxima-jupyter && \
@@ -98,51 +110,6 @@ RUN apt-get update && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-# php
-# RUN wget https://litipk.github.io/Jupyter-PHP-Installer/dist/jupyter-php-installer.phar && \
-#     apt-get update -y && \
-#     apt-get install -y --no-install-recommends \
-#     php \
-#     php-bz2 \
-#     php-cli \
-#     php-common \
-#     php-curl \
-#     php-gd \
-#     php-gmp \
-#     php-json \
-#     php-mbstring \
-#     php-readline \
-#     php-sqlite3 \
-#     php-xml \
-#     php-xmlrpc \
-#     php-zip \
-#     php-zmq \
-#     && \
-#     apt-get clean && \
-#     rm -rf /var/lib/apt/lists/* && \
-#     curl -sS https://getcomposer.org/installer | php && \
-#     mv composer.phar /usr/local/bin/composer && \
-#     composer require psy/psysh && \
-#     php jupyter-php-installer.phar install -vv && \
-#     mv /usr/local/share/jupyter/kernels/jupyter-php /opt/conda/share/jupyter/kernels/ && \
-#     rm -rf /home/$NB_USER/vendor && \		    
-#     rm -f /home/$NB_USER/composer.json /home/$NB_USER/composer.lock && \
-#     rm -f /home/$NB_USER/jupyter-php-installer.phar && \
-#     fix-permissions $CONDA_DIR && \
-#     fix-permissions /home/$NB_USER
-
-# cling
-# RUN conda install --quiet --yes 'xeus-cling' && \
-#    conda clean --all -f -y && \
-#    fix-permissions $CONDA_DIR && \
-#    fix-permissions /home/$NB_USER
-
-# install network tools
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends iputils-ping net-tools && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
 # extensions
 RUN conda install --quiet --yes \
     jupyterlab-language-pack-ja-JP \
@@ -150,6 +117,9 @@ RUN conda install --quiet --yes \
     conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
+
+# build jupyter lab
+RUN jupyter lab build
 
 # scripts
 COPY scripts/start.sh /usr/local/bin/start.sh
@@ -159,8 +129,7 @@ RUN chmod 755 /usr/local/bin/start.sh
 RUN cd /opt/conda/share/jupyter/lab/static/ && \
     curl -O https://requirejs.org/docs/release/2.3.6/minified/require.js
 
-COPY patches/static.patch \
-    patches/docmanager.patch \
+COPY patches/docmanager.patch \
     patches/extensionmanager.patch \
     patches/inspector.patch \
     patches/quicklisp.patch \
@@ -171,7 +140,8 @@ COPY patches/static.patch \
     /home/$NB_USER/
 
 RUN cd /opt/conda/share/jupyter/lab/static/ && \
-    patch -p1 < /home/$NB_USER/static.patch && \
+    sed -e 's/<\/head>/<script defer="defer" src="{{page_config.fullStaticUrl}}\/require.js"><\/script><\/head>/' \
+    index.html > index.html.new && mv index.html.new index.html && \
     cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/docmanager-extension/ && \
     patch -p1 < /home/$NB_USER/docmanager.patch && \
     cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/extensionmanager-extension/ && \
