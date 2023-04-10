@@ -2,8 +2,8 @@
 Dockerfile of Jupyter Notebook for Department of Information Science, Tohoku Gakuin University
 
 ## これは何？
-東北学院大学教養学部情報科学科の情報処理演習用として作成したDockerfileです。
-作成されたDockerイメージをロードするとJupyterNotebookが起動し、Webブラウザからpythonやprocessingなどのプログラミング環境を利用できます。
+東北学院大学教養学部情報科学科、及び、情報学部データサイエンス学科の情報処理演習用として作成したDockerfileです。
+作成されたDockerイメージをロードするとJupyterLabが起動し、Webブラウザからpythonやprocessingなどのプログラミング環境を利用できます。
 
 ## 使い方
 DockerHubにDockerイメージを登録してありますので、これをダウンロードして実行します。
@@ -28,6 +28,8 @@ http://cdee29d2143d:8888/?token=[token]
 - bash
 - [processing](https://github.com/Calysto/calysto_processing)
 - [maxima](https://github.com/robert-dodier/maxima-jupyter)
+- R
+- Julia
 
 ## 追記
 Ubuntu-20.04の環境下で実行すると以下のエラーが発生します（これは、ベースとなっている`ubuntu:22.04`に由来するエラーです）。
