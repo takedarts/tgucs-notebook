@@ -30,6 +30,7 @@ http://cdee29d2143d:8888/?token=[token]
 - [maxima](https://github.com/robert-dodier/maxima-jupyter)
 - R
 - Julia
+- Ruby
 
 ## 追記
 Ubuntu-20.04の環境下で実行すると以下のエラーが発生します（これは、ベースとなっている`ubuntu:22.04`に由来するエラーです）。

@@ -110,6 +110,17 @@ RUN apt-get update && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
+# ruby
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libtool libffi-dev ruby ruby-dev make && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    gem install iruby && \
+    iruby register --force && \
+    mv /home/$NB_USER/.local/share/jupyter/kernels/ruby /opt/conda/share/jupyter/kernels/ruby && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+
 # extensions
 RUN conda install --quiet --yes \
     jupyterlab-language-pack-ja-JP \
