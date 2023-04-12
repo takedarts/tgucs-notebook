@@ -24,7 +24,8 @@ RUN apt-get update && \
 
 # network tools
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends iputils-ping net-tools && \
+    apt-get install -y --no-install-recommends \
+    iputils-ping iputils-arping iputils-tracepath net-tools dnsutils telnet && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
