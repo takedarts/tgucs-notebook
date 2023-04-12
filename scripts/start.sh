@@ -102,7 +102,9 @@ if [ $(id -u) == 0 ] ; then
     sed -r "s#Defaults\s+secure_path=\"([^\"]+)\"#Defaults secure_path=\"\1:$CONDA_DIR/bin\"#" /etc/sudoers | grep secure_path > /etc/sudoers.d/path
 
     # Add a file server address to /etc/hosts
-    echo "192.168.1.253 t1.cs.tohoku-gakuin.ac.jp" >> /etc/hosts
+    echo "192.168.2.252 t1.cs.tohoku-gakuin.ac.jp" >> /etc/hosts
+    echo "192.168.2.252 www.ds.tohoku-gakuin.ac.jp" >> /etc/hosts
+    echo "192.168.2.252 gitlab.ds.tohoku-gakuin.ac.jp" >> /etc/hosts
 
     # Exec the command as NB_USER with the PATH and the rest of
     # the environment preserved
