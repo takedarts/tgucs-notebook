@@ -1,17 +1,16 @@
-diff -uprN old/plugin.json new/plugin.json
---- old/plugin.json	2020-09-21 03:31:39.000000000 +0900
-+++ new/plugin.json	2020-09-21 03:32:05.000000000 +0900
-@@ -7,13 +7,13 @@
+--- old/plugin.json	2023-10-12 06:31:26.000000000 +0900
++++ new/plugin.json	2024-03-08 01:55:09.740682326 +0900
+@@ -44,13 +44,13 @@
      "enabled": {
        "title": "Enabled Status",
-       "description": "Enables extension manager (requires Node.js/npm).\nWARNING: installing untrusted extensions may be unsafe.",
+       "description": "Enables extension manager.\nWARNING: installing untrusted extensions may be unsafe.",
 -      "default": true,
 +      "default": false,
        "type": "boolean"
      },
      "disclaimed": {
        "title": "Disclaimed Status",
-       "description": "Whether the user understand that extensions managed through this interface run arbitrary code that may be dangerous",
+       "description": "Whether the user agrees the access to external web services and understands extensions may introduce security risks or contain malicious code that runs on his machine.",
 -      "default": false,
 +      "default": true,
        "type": "boolean"

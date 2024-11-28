@@ -46,22 +46,18 @@ if [ $(id -u) == 0 ] ; then
     NB_GID=`stat -c "%g" /home/jovyan`
 
     if [ -z "$NB_USER" ]; then
-	NB_USER='user'
+    	NB_USER='user'
     fi
 
     # Change uid, gid, home to user settings if uid is 0.
     if [ "$NB_UID" == "0" ]; then
-	NB_UID="1000"
-	NB_GID="1000"
-	chown -R $NB_UID:$NB_GID /home/jovyan
+    	NB_UID="1000"
+	    NB_GID="1000"
+    	chown -R $NB_UID:$NB_GID /home/jovyan
     fi
 
     # Change permission of home directory
     chmod go-w /home/jovyan/
-
-    # Change owner of sketchbook directory (for processing)
-    chown $NB_UID:$NB_GID /root/.processing 
-    chown $NB_UID:$NB_GID /root/sketchbook
 
     # Change owner of quicklisp, maxima-jupyter directories (for maxima)
     chown -R $NB_UID:$NB_GID /usr/local/share/maxima-jupyter
@@ -71,25 +67,23 @@ if [ $(id -u) == 0 ] ; then
     groupmod -g $NB_GID users
 
     # Only attempt to change the jovyan username if it exists
-    echo "Set username to: $NB_USER ($NB_UID:$NB_GID)"
-    usermod -d /home/$NB_USER -u $NB_UID -g $NB_GID -l $NB_USER jovyan
+    if ! id $NB_USER &> /dev/null ; then
+        echo "Set username to: $NB_USER ($NB_UID:$NB_GID)"
+        usermod -d /home/$NB_USER -u $NB_UID -g $NB_GID -l $NB_USER jovyan
+    fi
 
     # handle home and working directory if the username changed
-    echo "Relocating home dir to /home/$NB_USER"
-    ln -s /home/jovyan "/home/$NB_USER"
+    if [ ! -e /home/$NB_USER ]; then
+        echo "Relocating home dir to /home/$NB_USER"
+        ln -s /home/jovyan "/home/$NB_USER"
+        chown $NB_UID:$NB_GID "/home/$NB_USER"
+    fi
     cd "/home/$NB_USER"
 
     # Copy sbclrc (for quicklisp)
     if [ ! -e "/home/$NB_USER/.sbclrc" ]; then
-	cp "/usr/local/share/maxima-jupyter/sbclrc" "/home/$NB_USER/.sbclrc"
-	chown $NB_UID:$NB_GID "/home/$NB_USER/.sbclrc"
-    fi
-
-    # Create ssh keys
-    if [ ! -e "/home/$NB_USER/.ssh/" ]; then
-	mkdir "/home/$NB_USER/.ssh" && ssh-keygen -f "/home/$NB_USER/.ssh/id_rsa" -t rsa -N ""
-	cp "/home/$NB_USER/.ssh/id_rsa.pub" "/home/$NB_USER/.ssh/authorized_keys"
-	chown $NB_UID:$NB_GID -R "/home/$NB_USER/.ssh"
+    	cp "/usr/local/share/maxima-jupyter/sbclrc" "/home/$NB_USER/.sbclrc"
+	    chown $NB_UID:$NB_GID "/home/$NB_USER/.sbclrc"
     fi
 
     # Enable sudo if requested
@@ -103,8 +97,6 @@ if [ $(id -u) == 0 ] ; then
 
     # Add a file server address to /etc/hosts
     echo "192.168.2.252 t1.cs.tohoku-gakuin.ac.jp" >> /etc/hosts
-    echo "192.168.2.252 www.ds.tohoku-gakuin.ac.jp" >> /etc/hosts
-    echo "192.168.2.252 gitlab.ds.tohoku-gakuin.ac.jp" >> /etc/hosts
 
     # Exec the command as NB_USER with the PATH and the rest of
     # the environment preserved

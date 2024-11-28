@@ -1,0 +1,12 @@
+--- old/matplotlibrc	2024-11-28 13:58:28
++++ new/matplotlibrc	2024-11-28 13:56:42
+@@ -259,7 +259,7 @@
+ ## relative to font.size, using the following values: xx-small, x-small,
+ ## small, medium, large, x-large, xx-large, larger, or smaller
+ 
+-#font.family:  sans-serif
++font.family: IPAexGothic
+ #font.style:   normal
+ #font.variant: normal
+ #font.weight:  normal
+ 

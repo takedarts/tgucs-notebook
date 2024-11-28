@@ -6,7 +6,7 @@ diff -uprN old/plugin.json new/plugin.json
        "description": "The font family used to render text.",
        "$ref": "#/definitions/fontFamily",
 -      "default": "monospace"
-+      "default": "Monaco, monospace"
++      "default": "Menlo, Monaco, Consolas, monospace"
      },
      "fontSize": {
        "title": "Font size",
