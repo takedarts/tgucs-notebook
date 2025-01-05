@@ -1,0 +1,11 @@
+--- old/tracker.json	2025-01-05 18:11:46.711277709 +0900
++++ new/tracker.json	2025-01-05 18:12:38.332497631 +0900
+@@ -671,7 +671,7 @@
+       "description": "The configuration for all code cells; it will override the CodeMirror default configuration.",
+       "type": "object",
+       "default": {
+-        "lineNumbers": false,
++        "lineNumbers": true,
+         "lineWrap": false
+       }
+     },

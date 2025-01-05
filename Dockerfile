@@ -174,6 +174,7 @@ RUN curl -OL https://moji.or.jp/wp-content/ipafont/IPAexfont/IPAexfont00401.zip 
 COPY patches/docmanager.patch \
     patches/extensionmanager.patch \
     patches/inspector.patch \
+    patches/notebook.patch \
     patches/quicklisp.patch \
     patches/terminal.patch \
     patches/translation.patch \
@@ -186,6 +187,8 @@ RUN cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/docmanager-extension/ &
     patch -p1 < /home/$NB_USER/extensionmanager.patch && \
     cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/inspector-extension/ && \
     patch -p1 < /home/$NB_USER/inspector.patch && \
+    cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/notebook-extension/ && \
+    patch -p1 < /home/$NB_USER/notebook.patch && \
     cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/terminal-extension/ && \
     patch -p1 < /home/$NB_USER/terminal.patch && \
     cd /opt/conda/share/jupyter/lab/schemas/\@jupyterlab/translation-extension/ && \
