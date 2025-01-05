@@ -51,7 +51,10 @@ RUN conda install --quiet --yes \
     ipython-sql==0.3.9 \
     lightgbm==4.5.0 \
     plotly==5.24.1 \
-    polars==1.15.0 && \
+    polars==1.15.0 \
+    jupyter-ai==2.18.1 \
+    langchain-openai==0.0.8 \
+    httpx==0.27.2 && \
     conda clean --all -f -y && \
     pip install \
     ipyturtle3==0.1.4 && \
