@@ -148,10 +148,11 @@ RUN jupyter lab build
 # download IPAex japanese font to matplotlib
 RUN curl -OL https://moji.or.jp/wp-content/ipafont/IPAexfont/IPAexfont00401.zip && \
     unzip IPAexfont00401.zip && \
-    cp IPAexfont00401/ipaexg.ttf /opt/conda/lib/python3.11/site-packages/matplotlib/mpl-data/fonts/ttf/IPAexGothic.ttf && \
-    cp IPAexfont00401/ipaexm.ttf /opt/conda/lib/python3.11/site-packages/matplotlib/mpl-data/fonts/ttf/IPAexMincho.ttf && \
-    chmod 644 /opt/conda/lib/python3.11/site-packages/matplotlib/mpl-data/fonts/ttf/IPAexGothic.ttf && \
-    chmod 644 /opt/conda/lib/python3.11/site-packages/matplotlib/mpl-data/fonts/ttf/IPAexMincho.ttf && \
+    mkdir /usr/share/fonts/truetype/ipaex && \
+    cp IPAexfont00401/ipaexg.ttf /usr/share/fonts/truetype/ipaex/IPAexGothic.ttf && \
+    cp IPAexfont00401/ipaexm.ttf /usr/share/fonts/truetype/ipaex/IPAexMincho.ttf && \
+    chmod 644 /usr/share/fonts/truetype/ipaex/IPAexGothic.ttf && \
+    chmod 644 /usr/share/fonts/truetype/ipaex/IPAexMincho.ttf && \
     rm -rf IPAexfont00401.zip IPAexfont00401
 
 # patches
