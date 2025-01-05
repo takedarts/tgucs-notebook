@@ -142,6 +142,21 @@ RUN bash http-server.sh && \
     fix-permissions /home/$NB_USER && \
     cd && rm -rf * `find ./ -maxdepth 1 | grep '\./\..'`
 
+# Processing Server
+COPY scripts/processing-server.sh \
+    files/processing.html \
+    files/processing.min.js \
+    files/processing.svg \
+    /home/$NB_USER/ 
+RUN mkdir -p /opt/processing && \
+    mv processing.html /opt/processing/index.html && \
+    mv processing.min.js processing.svg /opt/processing/ && \
+    bash processing-server.sh && \
+    rm -f processing-server.sh && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER && \
+    cd && rm -rf * `find ./ -maxdepth 1 | grep '\./\..'`
+
 # build jupyter lab
 RUN jupyter lab build
 

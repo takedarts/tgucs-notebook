@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="processing.svg">
+    <script src="processing.min.js"></script>
+    <script>
+        var proc = null;
+        var canvas = null;
+
+        function clear() {
+            if (canvas) {
+                canvas.remove();
+                canvas = null;
+            }
+        }
+
+        function stop() {
+            if (proc) {
+                proc.exit();
+                proc = null;
+            }
+        }
+
+        function run() {
+            stop();
+            clear();
+
+            var code = document.getElementById("code").value;
+            var panel = document.getElementById("panel");
+
+            canvas = document.createElement("canvas");
+            panel.appendChild(canvas);
+
+            try {
+                proc = new Processing(canvas, code);
+            } catch (e) {
+                alert(e);
+            }
+        }
+    </script>
+    <style>
+        #code {
+            width: 100%;
+            height: 400px;
+            overflow-y: scroll;
+            overflow-x: scroll;
+            font-family: "monospace";
+        }
+
+        #space {
+            height: 200px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>Processing</h1>
+    <div>
+        <p>実行結果</p>
+        <div id="panel"></div>
+    </div>
+    <div>
+        <button onclick="run()">Run</button>
+        <button onclick="stop()">Stop</button>
+    </div>
+    <div>
+        <p>プログラムコード</p>
+        <textarea id="code"></textarea>
+    </div>
+    <div id="space"></div>
+</body>
+
+</html>
