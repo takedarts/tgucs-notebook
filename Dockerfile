@@ -6,9 +6,8 @@ LABEL maintainer="Atsushi TAKEDA <takedarts@mail.tohoku-gakuin.ac.jp>"
 
 USER root
 
-# update packages and install manuals
+# install softwares
 RUN apt-get update && \
-    apt-get upgrade -y && \
     # common softwares
     apt-get install -y --no-install-recommends \
     libtool vim emacs rsync make \
@@ -210,7 +209,7 @@ COPY scripts/start.sh /usr/local/bin/start.sh
 RUN chmod 755 /usr/local/bin/start.sh
 
 # change default page to "Lab-style" page
-CMD ["start-notebook.sh", "--NotebookApp.default_url=\"/lab\""]
+CMD ["start-notebook.py", "--NotebookApp.default_url=\"/lab\""]
 
 # change default timezone to JST
 ENV TZ Asia/Tokyo
