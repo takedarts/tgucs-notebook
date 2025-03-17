@@ -83,6 +83,12 @@ if [ "$(id -u)" == 0 ] ; then
     fi
     cd "/home/${NB_USER}"
 
+    # Remove cache directory
+    if [ -e "/home/${NB_USER}/.cache" ]; then
+        _log "Removing /home/${NB_USER}/.cache"
+        rm -rf "/home/${NB_USER}/.cache"
+    fi
+
     # Copy sbclrc (for quicklisp)
     if [ ! -e "/home/${NB_USER}/.sbclrc" ]; then
     	cp "/usr/local/share/maxima-jupyter/sbclrc" "/home/${NB_USER}/.sbclrc"
