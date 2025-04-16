@@ -159,6 +159,15 @@ RUN mkdir -p /opt/processing && \
     fix-permissions /home/$NB_USER && \
     cd && rm -rf * `find ./ -maxdepth 1 | grep '\./\..'`
 
+# uninstall ai-related packages
+RUN conda uninstall --quiet --yes \
+    jupyter-ai \
+    langchain-openai && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER && \
+    cd && rm -rf * `find ./ -maxdepth 1 | grep '\./\..'`
+
 # build jupyter lab
 RUN jupyter lab build
 
